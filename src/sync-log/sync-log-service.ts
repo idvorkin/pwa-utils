@@ -6,11 +6,11 @@
  */
 
 import type {
-  ISyncLogService,
-  SyncLog,
-  SyncLogConfig,
-  SyncLogEventType,
-  SyncLogLevel,
+	ISyncLogService,
+	SyncLog,
+	SyncLogConfig,
+	SyncLogEventType,
+	SyncLogLevel,
 } from "./types";
 
 const DEFAULT_DB_NAME = "pwa-sync-logs";
@@ -22,253 +22,253 @@ const DB_VERSION = 1;
  * Open the sync log database
  */
 export async function openSyncLogDB(
-  config: Required<SyncLogConfig>,
+	config: Required<SyncLogConfig>,
 ): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(config.dbName, DB_VERSION);
+	return new Promise((resolve, reject) => {
+		const request = indexedDB.open(config.dbName, DB_VERSION);
 
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
+		request.onerror = () => reject(request.error);
+		request.onsuccess = () => resolve(request.result);
 
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
+		request.onupgradeneeded = (event) => {
+			const db = (event.target as IDBOpenDBRequest).result;
 
-      // Create object store if it doesn't exist
-      if (!db.objectStoreNames.contains(config.storeName)) {
-        const store = db.createObjectStore(config.storeName, { keyPath: "id" });
-        store.createIndex("timestamp", "timestamp", { unique: false });
-        store.createIndex("eventType", "eventType", { unique: false });
-        store.createIndex("level", "level", { unique: false });
-      }
-    };
-  });
+			// Create object store if it doesn't exist
+			if (!db.objectStoreNames.contains(config.storeName)) {
+				const store = db.createObjectStore(config.storeName, { keyPath: "id" });
+				store.createIndex("timestamp", "timestamp", { unique: false });
+				store.createIndex("eventType", "eventType", { unique: false });
+				store.createIndex("level", "level", { unique: false });
+			}
+		};
+	});
 }
 
 /**
  * Sync Log Service implementation
  */
 export class SyncLogService implements ISyncLogService {
-  private config: Required<SyncLogConfig>;
+	private config: Required<SyncLogConfig>;
 
-  constructor(config: SyncLogConfig = {}) {
-    this.config = {
-      dbName: config.dbName ?? DEFAULT_DB_NAME,
-      storeName: config.storeName ?? DEFAULT_STORE_NAME,
-      maxLogs: config.maxLogs ?? DEFAULT_MAX_LOGS,
-    };
-  }
+	constructor(config: SyncLogConfig = {}) {
+		this.config = {
+			dbName: config.dbName ?? DEFAULT_DB_NAME,
+			storeName: config.storeName ?? DEFAULT_STORE_NAME,
+			maxLogs: config.maxLogs ?? DEFAULT_MAX_LOGS,
+		};
+	}
 
-  async addLog(
-    eventType: SyncLogEventType,
-    level: SyncLogLevel,
-    message: string,
-    data?: unknown,
-  ): Promise<void> {
-    try {
-      const log: SyncLog = {
-        id: crypto.randomUUID(),
-        timestamp: new Date(),
-        eventType,
-        level,
-        message,
-        data,
-      };
+	async addLog(
+		eventType: SyncLogEventType,
+		level: SyncLogLevel,
+		message: string,
+		data?: unknown,
+	): Promise<void> {
+		try {
+			const log: SyncLog = {
+				id: crypto.randomUUID(),
+				timestamp: new Date(),
+				eventType,
+				level,
+				message,
+				data,
+			};
 
-      const db = await openSyncLogDB(this.config);
-      try {
-        await this.saveLog(db, log);
-        await this.enforceLimit(db);
-      } finally {
-        db.close();
-      }
-    } catch (error) {
-      // Check for QuotaExceededError - needs user attention
-      if (
-        error instanceof Error &&
-        (error.name === "QuotaExceededError" || error.message.includes("quota"))
-      ) {
-        console.error(
-          "CRITICAL: Storage quota exceeded while adding sync log.",
-          error,
-        );
-        throw new Error(
-          "Storage quota exceeded. Please clear old data or increase storage quota.",
-        );
-      }
-      // Other errors: log but don't throw - don't break the app for logging failures
-      console.error("Failed to add sync log:", error);
-    }
-  }
+			const db = await openSyncLogDB(this.config);
+			try {
+				await this.saveLog(db, log);
+				await this.enforceLimit(db);
+			} finally {
+				db.close();
+			}
+		} catch (error) {
+			// Check for QuotaExceededError - needs user attention
+			if (
+				error instanceof Error &&
+				(error.name === "QuotaExceededError" || error.message.includes("quota"))
+			) {
+				console.error(
+					"CRITICAL: Storage quota exceeded while adding sync log.",
+					error,
+				);
+				throw new Error(
+					"Storage quota exceeded. Please clear old data or increase storage quota.",
+				);
+			}
+			// Other errors: log but don't throw - don't break the app for logging failures
+			console.error("Failed to add sync log:", error);
+		}
+	}
 
-  async getLogs(): Promise<SyncLog[]> {
-    const db = await openSyncLogDB(this.config);
-    try {
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction([this.config.storeName], "readonly");
-        const store = tx.objectStore(this.config.storeName);
-        const index = store.index("timestamp");
-        const logs: SyncLog[] = [];
+	async getLogs(): Promise<SyncLog[]> {
+		const db = await openSyncLogDB(this.config);
+		try {
+			return new Promise((resolve, reject) => {
+				const tx = db.transaction([this.config.storeName], "readonly");
+				const store = tx.objectStore(this.config.storeName);
+				const index = store.index("timestamp");
+				const logs: SyncLog[] = [];
 
-        // Iterate in reverse order (newest first)
-        const request = index.openCursor(null, "prev");
+				// Iterate in reverse order (newest first)
+				const request = index.openCursor(null, "prev");
 
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => {
-          const cursor = request.result;
-          if (cursor) {
-            logs.push(cursor.value as SyncLog);
-            cursor.continue();
-          } else {
-            resolve(logs);
-          }
-        };
-      });
-    } finally {
-      db.close();
-    }
-  }
+				request.onerror = () => reject(request.error);
+				request.onsuccess = () => {
+					const cursor = request.result;
+					if (cursor) {
+						logs.push(cursor.value as SyncLog);
+						cursor.continue();
+					} else {
+						resolve(logs);
+					}
+				};
+			});
+		} finally {
+			db.close();
+		}
+	}
 
-  async getCount(): Promise<number> {
-    const db = await openSyncLogDB(this.config);
-    try {
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction([this.config.storeName], "readonly");
-        const store = tx.objectStore(this.config.storeName);
-        const request = store.count();
+	async getCount(): Promise<number> {
+		const db = await openSyncLogDB(this.config);
+		try {
+			return new Promise((resolve, reject) => {
+				const tx = db.transaction([this.config.storeName], "readonly");
+				const store = tx.objectStore(this.config.storeName);
+				const request = store.count();
 
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => resolve(request.result);
-      });
-    } finally {
-      db.close();
-    }
-  }
+				request.onerror = () => reject(request.error);
+				request.onsuccess = () => resolve(request.result);
+			});
+		} finally {
+			db.close();
+		}
+	}
 
-  async clearAll(): Promise<void> {
-    const db = await openSyncLogDB(this.config);
-    try {
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction([this.config.storeName], "readwrite");
-        const store = tx.objectStore(this.config.storeName);
-        const request = store.clear();
+	async clearAll(): Promise<void> {
+		const db = await openSyncLogDB(this.config);
+		try {
+			return new Promise((resolve, reject) => {
+				const tx = db.transaction([this.config.storeName], "readwrite");
+				const store = tx.objectStore(this.config.storeName);
+				const request = store.clear();
 
-        request.onerror = () =>
-          reject(new Error(`Failed to clear sync logs: ${request.error}`));
-        request.onsuccess = () => resolve();
-      });
-    } finally {
-      db.close();
-    }
-  }
+				request.onerror = () =>
+					reject(new Error(`Failed to clear sync logs: ${request.error}`));
+				request.onsuccess = () => resolve();
+			});
+		} finally {
+			db.close();
+		}
+	}
 
-  async exportLogs(): Promise<string> {
-    const logs = await this.getLogs();
-    return JSON.stringify(logs, null, 2);
-  }
+	async exportLogs(): Promise<string> {
+		const logs = await this.getLogs();
+		return JSON.stringify(logs, null, 2);
+	}
 
-  private async saveLog(db: IDBDatabase, log: SyncLog): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction([this.config.storeName], "readwrite");
-      const store = tx.objectStore(this.config.storeName);
-      const request = store.add(log);
+	private async saveLog(db: IDBDatabase, log: SyncLog): Promise<void> {
+		return new Promise((resolve, reject) => {
+			const tx = db.transaction([this.config.storeName], "readwrite");
+			const store = tx.objectStore(this.config.storeName);
+			const request = store.add(log);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve();
-    });
-  }
+			request.onerror = () => reject(request.error);
+			request.onsuccess = () => resolve();
+		});
+	}
 
-  /**
-   * Enforce the maximum log limit by deleting oldest entries.
-   * Uses a single transaction to avoid race conditions under concurrent writes.
-   */
-  private async enforceLimit(db: IDBDatabase): Promise<void> {
-    return new Promise((resolve, reject) => {
-      // Use a single readwrite transaction for atomicity
-      const tx = db.transaction([this.config.storeName], "readwrite");
-      const store = tx.objectStore(this.config.storeName);
+	/**
+	 * Enforce the maximum log limit by deleting oldest entries.
+	 * Uses a single transaction to avoid race conditions under concurrent writes.
+	 */
+	private async enforceLimit(db: IDBDatabase): Promise<void> {
+		return new Promise((resolve, reject) => {
+			// Use a single readwrite transaction for atomicity
+			const tx = db.transaction([this.config.storeName], "readwrite");
+			const store = tx.objectStore(this.config.storeName);
 
-      // First, get the count
-      const countRequest = store.count();
+			// First, get the count
+			const countRequest = store.count();
 
-      countRequest.onerror = () => reject(countRequest.error);
-      countRequest.onsuccess = () => {
-        const count = countRequest.result;
-        if (count <= this.config.maxLogs) {
-          resolve();
-          return;
-        }
+			countRequest.onerror = () => reject(countRequest.error);
+			countRequest.onsuccess = () => {
+				const count = countRequest.result;
+				if (count <= this.config.maxLogs) {
+					resolve();
+					return;
+				}
 
-        const toDelete = count - this.config.maxLogs;
-        const index = store.index("timestamp");
-        const idsToDelete: string[] = [];
+				const toDelete = count - this.config.maxLogs;
+				const index = store.index("timestamp");
+				const idsToDelete: string[] = [];
 
-        // Get oldest entries within the same transaction
-        const cursorRequest = index.openCursor(null, "next");
+				// Get oldest entries within the same transaction
+				const cursorRequest = index.openCursor(null, "next");
 
-        cursorRequest.onerror = () => reject(cursorRequest.error);
-        cursorRequest.onsuccess = () => {
-          const cursor = cursorRequest.result;
-          if (cursor && idsToDelete.length < toDelete) {
-            idsToDelete.push((cursor.value as SyncLog).id);
-            cursor.continue();
-          } else if (idsToDelete.length > 0) {
-            // Delete all collected IDs within the same transaction
-            let deleted = 0;
-            for (const id of idsToDelete) {
-              const deleteRequest = store.delete(id);
-              deleteRequest.onerror = () => reject(deleteRequest.error);
-              deleteRequest.onsuccess = () => {
-                deleted++;
-                if (deleted === idsToDelete.length) {
-                  resolve();
-                }
-              };
-            }
-          } else {
-            resolve();
-          }
-        };
-      };
-    });
-  }
+				cursorRequest.onerror = () => reject(cursorRequest.error);
+				cursorRequest.onsuccess = () => {
+					const cursor = cursorRequest.result;
+					if (cursor && idsToDelete.length < toDelete) {
+						idsToDelete.push((cursor.value as SyncLog).id);
+						cursor.continue();
+					} else if (idsToDelete.length > 0) {
+						// Delete all collected IDs within the same transaction
+						let deleted = 0;
+						for (const id of idsToDelete) {
+							const deleteRequest = store.delete(id);
+							deleteRequest.onerror = () => reject(deleteRequest.error);
+							deleteRequest.onsuccess = () => {
+								deleted++;
+								if (deleted === idsToDelete.length) {
+									resolve();
+								}
+							};
+						}
+					} else {
+						resolve();
+					}
+				};
+			};
+		});
+	}
 }
 
 /**
  * Create a mock sync log service for testing
  */
 export function createMockSyncLogService(): ISyncLogService & {
-  logs: SyncLog[];
+	logs: SyncLog[];
 } {
-  const logs: SyncLog[] = [];
+	const logs: SyncLog[] = [];
 
-  return {
-    logs,
-    async addLog(
-      eventType: SyncLogEventType,
-      level: SyncLogLevel,
-      message: string,
-      data?: unknown,
-    ) {
-      logs.push({
-        id: crypto.randomUUID(),
-        timestamp: new Date(),
-        eventType,
-        level,
-        message,
-        data,
-      });
-    },
-    async getLogs() {
-      return [...logs].reverse();
-    },
-    async getCount() {
-      return logs.length;
-    },
-    async clearAll() {
-      logs.length = 0;
-    },
-    async exportLogs() {
-      return JSON.stringify([...logs].reverse(), null, 2);
-    },
-  };
+	return {
+		logs,
+		async addLog(
+			eventType: SyncLogEventType,
+			level: SyncLogLevel,
+			message: string,
+			data?: unknown,
+		) {
+			logs.push({
+				id: crypto.randomUUID(),
+				timestamp: new Date(),
+				eventType,
+				level,
+				message,
+				data,
+			});
+		},
+		async getLogs() {
+			return [...logs].reverse();
+		},
+		async getCount() {
+			return logs.length;
+		},
+		async clearAll() {
+			logs.length = 0;
+		},
+		async exportLogs() {
+			return JSON.stringify([...logs].reverse(), null, 2);
+		},
+	};
 }

@@ -5,15 +5,15 @@
  */
 
 export type {
-  ISyncLogService,
-  SyncLog,
-  SyncLogConfig,
-  SyncLogEventType,
-  SyncLogLevel,
+	ISyncLogService,
+	SyncLog,
+	SyncLogConfig,
+	SyncLogEventType,
+	SyncLogLevel,
 } from "./types";
 
 export {
-  createMockSyncLogService,
-  openSyncLogDB,
-  SyncLogService,
+	createMockSyncLogService,
+	openSyncLogDB,
+	SyncLogService,
 } from "./sync-log-service";

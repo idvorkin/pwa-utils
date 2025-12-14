@@ -5,14 +5,14 @@
  */
 
 export type {
-  IVersionCheckService,
-  ServiceWorkerAdapter,
-  VersionCheckConfig,
-  VersionCheckState,
+	IVersionCheckService,
+	ServiceWorkerAdapter,
+	VersionCheckConfig,
+	VersionCheckState,
 } from "./types";
 
 export {
-  createBrowserServiceWorkerAdapter,
-  createMockServiceWorkerAdapter,
-  VersionCheckService,
+	createBrowserServiceWorkerAdapter,
+	createMockServiceWorkerAdapter,
+	VersionCheckService,
 } from "./version-check-service";

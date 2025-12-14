@@ -6,25 +6,25 @@
  */
 
 export type {
-  BugReportConfig,
-  BugReportData,
-  IShakeDetector,
-  ScreenshotCapture,
-  ShakeDetectorConfig,
-  ShakeDetectorState,
+	BugReportConfig,
+	BugReportData,
+	IShakeDetector,
+	ScreenshotCapture,
+	ShakeDetectorConfig,
+	ShakeDetectorState,
 } from "./types";
 
 export {
-  buildGitHubIssueUrl,
-  BugReporterService,
-  createEnvironmentMetadata,
-  createScreenshotCapture,
-  isMacPlatform,
-  isMobileDevice,
-  openBugReport,
+	buildGitHubIssueUrl,
+	BugReporterService,
+	createEnvironmentMetadata,
+	createScreenshotCapture,
+	isMacPlatform,
+	isMobileDevice,
+	openBugReport,
 } from "./bug-reporter-service";
 
 export {
-  createMockShakeDetector,
-  ShakeDetector,
+	createMockShakeDetector,
+	ShakeDetector,
 } from "./shake-detector";

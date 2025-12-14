@@ -1,0 +1,5 @@
+.specstory/**
+zz-chop-logs
+dist/
+node_modules/
+coverage/

@@ -4,7 +4,7 @@
 # Build output
 dist/
 
-# SpecStory explanation file
+# SpecStory/CHOP transcripts (keep zz-chop-logs if needed)
 .specstory/**
 .aider*
 

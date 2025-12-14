@@ -16,13 +16,13 @@ This library follows the **Humble Object** pattern for testability. Browser APIs
 
 ### Modules
 
-| Module | Description |
-|--------|-------------|
-| `device-service` | Testable interface for browser APIs (localStorage, navigator, etc.) |
-| `session-recorder` | IndexedDB-based flight recorder for debugging |
-| `version-check` | Service worker update detection and management |
-| `bug-reporter` | GitHub issue creation + shake detection for mobile |
-| `sync-log` | Debug logging service for sync operations |
+| Module             | Description                                                         |
+| ------------------ | ------------------------------------------------------------------- |
+| `device-service`   | Testable interface for browser APIs (localStorage, navigator, etc.) |
+| `session-recorder` | IndexedDB-based flight recorder for debugging                       |
+| `version-check`    | Service worker update detection and management                      |
+| `bug-reporter`     | GitHub issue creation + shake detection for mobile                  |
+| `sync-log`         | Debug logging service for sync operations                           |
 
 ## Testing
 
@@ -38,11 +38,15 @@ just test-coverage  # Run with coverage report
 
 ```typescript
 // Import from main entry
-import { SessionRecorder, DeviceService, BugReporterService } from '@anthropic/pwa-utils';
+import {
+  SessionRecorder,
+  DeviceService,
+  BugReporterService,
+} from "@anthropic/pwa-utils";
 
 // Or import specific modules
-import { SessionRecorder } from '@anthropic/pwa-utils/session-recorder';
-import { createMockDeviceService } from '@anthropic/pwa-utils/device-service';
+import { SessionRecorder } from "@anthropic/pwa-utils/session-recorder";
+import { createMockDeviceService } from "@anthropic/pwa-utils/device-service";
 ```
 
 ## Convention Updates
