@@ -1,9 +1,45 @@
 #!/bin/bash
-# Generate version info at build time
-# Usage: ./scripts/generate-version.sh [output-file]
+# =============================================================================
+# Generate Version Info
+# =============================================================================
+# Creates a TypeScript file with git commit info and build timestamp.
+# Use with BugReporterService to include version info in bug reports.
 #
-# Default output: src/generated_version.ts
-# Can also output to stdout with: ./scripts/generate-version.sh -
+# SETUP:
+# 1. Copy this script to your project: scripts/generate-version.sh
+# 2. Make it executable: chmod +x scripts/generate-version.sh
+# 3. Add to package.json:
+#      "scripts": {
+#        "predev": "./scripts/generate-version.sh",
+#        "prebuild": "./scripts/generate-version.sh"
+#      }
+# 4. Add to .gitignore:
+#      **/generated_version.ts
+#
+# USAGE:
+#   ./scripts/generate-version.sh              # outputs to src/generated_version.ts
+#   ./scripts/generate-version.sh lib/ver.ts   # custom output path
+#   ./scripts/generate-version.sh -            # outputs to stdout
+#
+# IN YOUR CODE:
+#   import { VERSION_INFO } from "./generated_version";
+#   import { BugReporterService } from "@anthropic/pwa-utils";
+#
+#   const bugReporter = new BugReporterService({
+#     repository: "owner/repo",
+#     versionInfo: VERSION_INFO,
+#   });
+#
+# GENERATED EXPORTS:
+#   - GIT_SHA: string          Full commit hash
+#   - GIT_SHA_SHORT: string    Short hash (7 chars)
+#   - GIT_COMMIT_URL: string   GitHub link to commit
+#   - GIT_CURRENT_URL: string  GitHub link to branch
+#   - GIT_BRANCH: string       Branch name
+#   - BUILD_TIMESTAMP: string  ISO 8601 build time
+#   - VERSION_INFO: object     All of the above as an object
+#   - VersionInfo: type        TypeScript type for VERSION_INFO
+# =============================================================================
 
 set -e
 
