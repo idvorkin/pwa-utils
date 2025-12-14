@@ -287,7 +287,11 @@ export class BugReporterService {
 		if (!this.config.repository) {
 			throw new Error("No repository configured for bug reports");
 		}
-		await openBugReport(this.config.repository, data, this.deviceService);
+		// Use buildIssueUrl to include version info from getMetadata()
+		const url = this.buildIssueUrl(data);
+		if (typeof window !== "undefined") {
+			window.open(url, "_blank");
+		}
 	}
 
 	/** Build a GitHub issue URL (for preview) */

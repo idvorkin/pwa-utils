@@ -303,5 +303,25 @@ describe("BugReporterService", () => {
 			expect(url).toContain("abc123d");
 			expect(url).toContain("main");
 		});
+
+		it("submitReport includes version info in opened URL", async () => {
+			const mockDevice = createMockDeviceService();
+			const service = new BugReporterService(
+				{ repository: "test/repo", versionInfo: mockVersionInfo },
+				mockDevice,
+			);
+			const windowOpenSpy = vi
+				.spyOn(window, "open")
+				.mockImplementation(() => null);
+
+			await service.submitReport({ title: "Bug", description: "Desc" });
+
+			expect(windowOpenSpy).toHaveBeenCalled();
+			const url = windowOpenSpy.mock.calls[0][0] as string;
+			expect(url).toContain("abc123d"); // version
+			expect(url).toContain("main"); // branch
+
+			windowOpenSpy.mockRestore();
+		});
 	});
 });
