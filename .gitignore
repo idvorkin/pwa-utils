@@ -1,8 +1,8 @@
 # ==============================================================================
 # PROJECT SPECIFIC
 # ==============================================================================
-# Build output
-dist/
+# Build output - NOT ignored because we install from GitHub
+# dist/
 
 # Generated at build time
 **/generated_version.ts
