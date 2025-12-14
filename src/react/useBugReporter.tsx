@@ -75,6 +75,14 @@ export function BugReporterProvider({
 
 	const { sessionRecorder, bugReporter, shakeDetector } = services;
 
+	// Cleanup services on unmount
+	useEffect(() => {
+		return () => {
+			sessionRecorder.dispose();
+			shakeDetector.dispose();
+		};
+	}, [sessionRecorder, shakeDetector]);
+
 	const [shakeEnabled, setShakeEnabledState] = useState(
 		bugReporter.shakeEnabled,
 	);

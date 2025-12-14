@@ -42,11 +42,11 @@ import {
   SessionRecorder,
   DeviceService,
   BugReporterService,
-} from "@anthropic/pwa-utils";
+} from "@idvorkin/pwa-utils";
 
 // Or import specific modules
-import { SessionRecorder } from "@anthropic/pwa-utils/session-recorder";
-import { createMockDeviceService } from "@anthropic/pwa-utils/device-service";
+import { SessionRecorder } from "@idvorkin/pwa-utils/session-recorder";
+import { createMockDeviceService } from "@idvorkin/pwa-utils/device-service";
 ```
 
 ## Convention Updates

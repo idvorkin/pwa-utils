@@ -5,13 +5,7 @@
  *
  * @packageDocumentation
  */
-export type {
-	BugReportMetadata,
-	BugReporterContextType,
-	BugReporterProviderProps,
-	VersionCheckHookReturn,
-	VersionCheckHookState,
-} from "./types.js";
+export type { BugReportMetadata, BugReporterContextType, BugReporterProviderProps, VersionCheckHookReturn, VersionCheckHookState, } from "./types.js";
 export { BugReporterProvider, useBugReporter } from "./useBugReporter.js";
 export { useVersionCheck } from "./useVersionCheck.js";
 export { extractBrowser, formatDuration, formatRelativeTime } from "./utils.js";

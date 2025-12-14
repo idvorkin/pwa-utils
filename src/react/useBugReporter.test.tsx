@@ -29,6 +29,7 @@ vi.mock("../bug-reporter/index.js", () => ({
 		onShake: vi.fn(() => () => {}),
 		onStateChange: vi.fn(() => () => {}),
 		requestPermission: vi.fn(async () => true),
+		dispose: vi.fn(),
 	})),
 }));
 
@@ -40,6 +41,7 @@ vi.mock("../session-recorder/index.js", () => ({
 			interactions: 42,
 			errors: 0,
 		})),
+		dispose: vi.fn(),
 	})),
 }));
 

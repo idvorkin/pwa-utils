@@ -71,30 +71,45 @@ describe("useVersionCheck", () => {
 			expect(result.current.lastCheckTime).toEqual(new Date("2024-01-01"));
 		});
 
-		it("should call checkForUpdate on mount", () => {
+		it("should call checkForUpdate on mount", async () => {
 			const mockChecker = createMockVersionChecker();
 
 			renderHook(() => useVersionCheck(mockChecker as never));
+
+			// Wait for mount effect to complete
+			await act(async () => {
+				await Promise.resolve();
+			});
 
 			expect(mockChecker.checkForUpdate).toHaveBeenCalledTimes(1);
 		});
 
-		it("should subscribe to state changes", () => {
+		it("should subscribe to state changes", async () => {
 			const mockChecker = createMockVersionChecker();
 
 			renderHook(() => useVersionCheck(mockChecker as never));
+
+			// Wait for mount effect to complete
+			await act(async () => {
+				await Promise.resolve();
+			});
 
 			expect(mockChecker.onStateChange).toHaveBeenCalledTimes(1);
 		});
 	});
 
 	describe("state updates", () => {
-		it("should update when service reports update available", () => {
+		it("should update when service reports update available", async () => {
 			const mockChecker = createMockVersionChecker();
 
 			const { result } = renderHook(() =>
 				useVersionCheck(mockChecker as never),
 			);
+
+			// Wait for mount effect to complete
+			await act(async () => {
+				await Promise.resolve();
+			});
 
 			expect(result.current.updateAvailable).toBe(false);
 
@@ -120,13 +135,18 @@ describe("useVersionCheck", () => {
 			expect(result.current.isChecking).toBe(false);
 		});
 
-		it("should update lastCheckTime", () => {
+		it("should update lastCheckTime", async () => {
 			const mockChecker = createMockVersionChecker();
 			const newDate = new Date("2024-06-15");
 
 			const { result } = renderHook(() =>
 				useVersionCheck(mockChecker as never),
 			);
+
+			// Wait for mount effect to complete
+			await act(async () => {
+				await Promise.resolve();
+			});
 
 			act(() => {
 				mockChecker._setState({ lastCheckTime: newDate });
@@ -156,12 +176,17 @@ describe("useVersionCheck", () => {
 	});
 
 	describe("applyUpdate", () => {
-		it("should call service applyUpdate", () => {
+		it("should call service applyUpdate", async () => {
 			const mockChecker = createMockVersionChecker();
 
 			const { result } = renderHook(() =>
 				useVersionCheck(mockChecker as never),
 			);
+
+			// Wait for mount effect to complete
+			await act(async () => {
+				await Promise.resolve();
+			});
 
 			act(() => {
 				result.current.applyUpdate();
@@ -172,7 +197,7 @@ describe("useVersionCheck", () => {
 	});
 
 	describe("dismissUpdate", () => {
-		it("should hide update banner when dismissed", () => {
+		it("should hide update banner when dismissed", async () => {
 			const mockChecker = createMockVersionChecker({
 				updateAvailable: true,
 			});
@@ -180,6 +205,11 @@ describe("useVersionCheck", () => {
 			const { result } = renderHook(() =>
 				useVersionCheck(mockChecker as never),
 			);
+
+			// Wait for mount effect to complete
+			await act(async () => {
+				await Promise.resolve();
+			});
 
 			expect(result.current.updateAvailable).toBe(true);
 
@@ -190,7 +220,7 @@ describe("useVersionCheck", () => {
 			expect(result.current.updateAvailable).toBe(false);
 		});
 
-		it("should reset dismissed state when new update available", () => {
+		it("should reset dismissed state when new update available", async () => {
 			const mockChecker = createMockVersionChecker({
 				updateAvailable: true,
 			});
@@ -198,6 +228,11 @@ describe("useVersionCheck", () => {
 			const { result } = renderHook(() =>
 				useVersionCheck(mockChecker as never),
 			);
+
+			// Wait for mount effect to complete
+			await act(async () => {
+				await Promise.resolve();
+			});
 
 			// Dismiss the update
 			act(() => {

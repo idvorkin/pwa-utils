@@ -1,10 +1,7 @@
 /**
  * React context and hook for bug reporting with shake detection
  */
-import type {
-	BugReporterContextType,
-	BugReporterProviderProps,
-} from "./types.js";
+import type { BugReporterContextType, BugReporterProviderProps } from "./types.js";
 /**
  * Provider component for bug reporter functionality
  *
@@ -24,13 +21,7 @@ import type {
  * }
  * ```
  */
-export declare function BugReporterProvider({
-	children,
-	repository,
-	labels,
-	versionInfo,
-	buildInfo,
-}: BugReporterProviderProps): import("react/jsx-runtime").JSX.Element;
+export declare function BugReporterProvider({ children, repository, labels, versionInfo, buildInfo, }: BugReporterProviderProps): import("react/jsx-runtime").JSX.Element;
 /**
  * Hook to access bug reporter functionality
  *

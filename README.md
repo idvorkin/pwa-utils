@@ -22,7 +22,7 @@ npm run build
 A "humble object" that abstracts browser APIs for testability. All other modules use this for browser interactions.
 
 ```typescript
-import { DeviceService, createMockDeviceService } from "@anthropic/pwa-utils";
+import { DeviceService, createMockDeviceService } from "@idvorkin/pwa-utils";
 
 // Production: uses real browser APIs
 DeviceService.getStorageItem("key");
@@ -41,7 +41,7 @@ const mockDevice = createMockDeviceService({
 IndexedDB-based flight recorder for debugging. Captures user interactions, errors, and state changes for later analysis.
 
 ```typescript
-import { SessionRecorder, createRecordAppEvent } from "@anthropic/pwa-utils";
+import { SessionRecorder, createRecordAppEvent } from "@idvorkin/pwa-utils";
 
 // Create recorder
 const recorder = new SessionRecorder({
@@ -60,7 +60,7 @@ const recording = recorder.getRecording();
 const blob = recorder.getRecordingAsBlob();
 
 // Retrieve persisted sessions (survives page reload)
-import { getPersistedSessions } from "@anthropic/pwa-utils";
+import { getPersistedSessions } from "@idvorkin/pwa-utils";
 const sessions = await getPersistedSessions();
 ```
 
@@ -72,7 +72,7 @@ Service worker update detection and management.
 import {
   VersionCheckService,
   createMockServiceWorkerAdapter,
-} from "@anthropic/pwa-utils";
+} from "@idvorkin/pwa-utils";
 
 const versionCheck = new VersionCheckService({
   storageKey: "my-app-update-check",
@@ -106,7 +106,7 @@ import {
   ShakeDetector,
   buildGitHubIssueUrl,
   type VersionInfo,
-} from "@anthropic/pwa-utils";
+} from "@idvorkin/pwa-utils";
 
 // Import generated version info (see Version Generation below)
 import { VERSION_INFO } from "./generated_version";
@@ -155,7 +155,7 @@ shakeDetector.setEnabled(true);
 Debug logging service for sync operations with automatic pruning.
 
 ```typescript
-import { SyncLogService } from "@anthropic/pwa-utils";
+import { SyncLogService } from "@idvorkin/pwa-utils";
 
 const syncLog = new SyncLogService({
   dbName: "my-app-sync-logs",
@@ -221,7 +221,7 @@ export type VersionInfo = typeof VERSION_INFO;
 Use with BugReporterService:
 
 ```typescript
-import { BugReporterService } from "@anthropic/pwa-utils";
+import { BugReporterService } from "@idvorkin/pwa-utils";
 import { VERSION_INFO } from "./generated_version";
 
 const bugReporter = new BugReporterService({
@@ -249,7 +249,7 @@ import {
   createMockServiceWorkerAdapter,
   createMockShakeDetector,
   createMockSyncLogService,
-} from "@anthropic/pwa-utils";
+} from "@idvorkin/pwa-utils";
 
 // Mock device service
 const mockDevice = createMockDeviceService({
@@ -298,14 +298,14 @@ import {
   SessionRecorder,
   DeviceService,
   BugReporterService,
-} from "@anthropic/pwa-utils";
+} from "@idvorkin/pwa-utils";
 
 // Direct module imports (for tree-shaking)
-import { SessionRecorder } from "@anthropic/pwa-utils/session-recorder";
-import { DeviceService } from "@anthropic/pwa-utils/device-service";
-import { VersionCheckService } from "@anthropic/pwa-utils/version-check";
-import { BugReporterService } from "@anthropic/pwa-utils/bug-reporter";
-import { SyncLogService } from "@anthropic/pwa-utils/sync-log";
+import { SessionRecorder } from "@idvorkin/pwa-utils/session-recorder";
+import { DeviceService } from "@idvorkin/pwa-utils/device-service";
+import { VersionCheckService } from "@idvorkin/pwa-utils/version-check";
+import { BugReporterService } from "@idvorkin/pwa-utils/bug-reporter";
+import { SyncLogService } from "@idvorkin/pwa-utils/sync-log";
 ```
 
 ## License

@@ -22,7 +22,5 @@ import type { VersionCheckHookReturn } from "./types.js";
  * }
  * ```
  */
-export declare function useVersionCheck(
-	versionChecker: VersionCheckService,
-): VersionCheckHookReturn;
+export declare function useVersionCheck(versionChecker: VersionCheckService): VersionCheckHookReturn;
 //# sourceMappingURL=useVersionCheck.d.ts.map
