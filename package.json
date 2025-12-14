@@ -1,5 +1,5 @@
 {
-	"name": "@anthropic/pwa-utils",
+	"name": "@idvorkin/pwa-utils",
 	"version": "0.1.0",
 	"description": "PWA debugging utilities: session recording, bug reporting, version checking",
 	"type": "module",
@@ -11,7 +11,8 @@
 		"./device-service": "./dist/device-service/index.js",
 		"./version-check": "./dist/version-check/index.js",
 		"./bug-reporter": "./dist/bug-reporter/index.js",
-		"./sync-log": "./dist/sync-log/index.js"
+		"./sync-log": "./dist/sync-log/index.js",
+		"./react": "./dist/react/index.js"
 	},
 	"scripts": {
 		"build": "tsc",
@@ -35,6 +36,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^20.0.0",
+		"@types/react": "^19.2.7",
 		"fake-indexeddb": "^6.0.0",
 		"jsdom": "^27.3.0",
 		"typescript": "^5.3.0",
