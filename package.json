@@ -16,6 +16,7 @@
 	},
 	"scripts": {
 		"build": "tsc",
+		"prepare": "npm run build",
 		"test": "vitest",
 		"test:coverage": "vitest --coverage",
 		"lint": "eslint src",
