@@ -11,6 +11,7 @@ import type {
 	BugReportConfig,
 	BugReportData,
 	ScreenshotCapture,
+	VersionInfo,
 } from "./types";
 
 const DEFAULT_SHAKE_ENABLED_KEY = "pwa-bug-reporter-shake-enabled";
@@ -172,7 +173,12 @@ export async function openBugReport(
  * Bug Reporter Service for managing bug report state and preferences
  */
 export class BugReporterService {
-	private config: Required<BugReportConfig>;
+	private config: {
+		repository: string;
+		shakeEnabledKey: string;
+		labels: string[];
+		versionInfo?: VersionInfo;
+	};
 	private deviceService: IDeviceService;
 	private screenshotCapture: ScreenshotCapture;
 	private _shakeEnabled: boolean;
@@ -185,6 +191,7 @@ export class BugReporterService {
 			repository: config.repository ?? "",
 			shakeEnabledKey: config.shakeEnabledKey ?? DEFAULT_SHAKE_ENABLED_KEY,
 			labels: config.labels ?? ["bug"],
+			versionInfo: config.versionInfo,
 		};
 		this.deviceService = deviceService;
 		this.screenshotCapture = createScreenshotCapture();
@@ -225,9 +232,24 @@ export class BugReporterService {
 		return this.screenshotCapture.capture();
 	}
 
-	/** Get current environment metadata */
+	/** Get current environment metadata (includes version info if configured) */
 	getMetadata(): Record<string, unknown> {
-		return createEnvironmentMetadata(this.deviceService);
+		const metadata = createEnvironmentMetadata(this.deviceService);
+		if (this.config.versionInfo) {
+			return {
+				...metadata,
+				version: this.config.versionInfo.shaShort,
+				commitUrl: this.config.versionInfo.commitUrl,
+				branch: this.config.versionInfo.branch,
+				buildTimestamp: this.config.versionInfo.buildTimestamp,
+			};
+		}
+		return metadata;
+	}
+
+	/** Get version info (if configured) */
+	getVersionInfo(): VersionInfo | undefined {
+		return this.config.versionInfo;
 	}
 
 	/** Open a bug report on GitHub */

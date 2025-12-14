@@ -55,6 +55,7 @@ export {
 	type ScreenshotCapture,
 	type ShakeDetectorConfig,
 	type ShakeDetectorState,
+	type VersionInfo,
 } from "./bug-reporter";
 
 // Sync Log

@@ -233,4 +233,75 @@ describe("BugReporterService", () => {
 
 		expect(service.isMobile).toBe(true);
 	});
+
+	describe("version info", () => {
+		const mockVersionInfo = {
+			sha: "abc123def456",
+			shaShort: "abc123d",
+			commitUrl: "https://github.com/test/repo/commit/abc123def456",
+			currentUrl: "https://github.com/test/repo/tree/main",
+			branch: "main",
+			buildTimestamp: "2025-01-15T12:00:00Z",
+		};
+
+		it("includes version info in metadata when configured", () => {
+			const mockDevice = createMockDeviceService();
+			const service = new BugReporterService(
+				{ versionInfo: mockVersionInfo },
+				mockDevice,
+			);
+
+			const metadata = service.getMetadata();
+
+			expect(metadata.version).toBe("abc123d");
+			expect(metadata.commitUrl).toBe(
+				"https://github.com/test/repo/commit/abc123def456",
+			);
+			expect(metadata.branch).toBe("main");
+			expect(metadata.buildTimestamp).toBe("2025-01-15T12:00:00Z");
+		});
+
+		it("excludes version info when not configured", () => {
+			const mockDevice = createMockDeviceService();
+			const service = new BugReporterService({}, mockDevice);
+
+			const metadata = service.getMetadata();
+
+			expect(metadata.version).toBeUndefined();
+			expect(metadata.commitUrl).toBeUndefined();
+		});
+
+		it("getVersionInfo returns configured version", () => {
+			const mockDevice = createMockDeviceService();
+			const service = new BugReporterService(
+				{ versionInfo: mockVersionInfo },
+				mockDevice,
+			);
+
+			expect(service.getVersionInfo()).toEqual(mockVersionInfo);
+		});
+
+		it("getVersionInfo returns undefined when not configured", () => {
+			const mockDevice = createMockDeviceService();
+			const service = new BugReporterService({}, mockDevice);
+
+			expect(service.getVersionInfo()).toBeUndefined();
+		});
+
+		it("includes version in GitHub issue URL", () => {
+			const mockDevice = createMockDeviceService();
+			const service = new BugReporterService(
+				{ repository: "test/repo", versionInfo: mockVersionInfo },
+				mockDevice,
+			);
+
+			const url = service.buildIssueUrl({
+				title: "Bug",
+				description: "Description",
+			});
+
+			expect(url).toContain("abc123d");
+			expect(url).toContain("main");
+		});
+	});
 });

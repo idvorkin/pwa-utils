@@ -2,6 +2,25 @@
  * Bug Reporter Types
  */
 
+/**
+ * Version information generated at build time
+ * Use scripts/generate-version.sh to create generated_version.ts
+ */
+export interface VersionInfo {
+	/** Full git SHA */
+	sha: string;
+	/** Short git SHA (7 chars) */
+	shaShort: string;
+	/** URL to the commit on GitHub */
+	commitUrl: string;
+	/** URL to the current branch on GitHub */
+	currentUrl: string;
+	/** Git branch name */
+	branch: string;
+	/** Build timestamp in ISO format */
+	buildTimestamp: string;
+}
+
 export interface ShakeDetectorConfig {
 	/** Threshold in m/s² to trigger shake detection (default: 25) */
 	threshold?: number;
@@ -42,6 +61,8 @@ export interface BugReportConfig {
 	shakeEnabledKey?: string;
 	/** Labels to add to bug reports */
 	labels?: string[];
+	/** Version info to include in all bug reports */
+	versionInfo?: VersionInfo;
 }
 
 export interface BugReportData {

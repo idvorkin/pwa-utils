@@ -12,6 +12,7 @@ export type {
 	ScreenshotCapture,
 	ShakeDetectorConfig,
 	ShakeDetectorState,
+	VersionInfo,
 } from "./types";
 
 export {
