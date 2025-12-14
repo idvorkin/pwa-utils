@@ -64,7 +64,7 @@
 		"fake-indexeddb": "^6.0.0",
 		"jsdom": "^27.3.0",
 		"typescript": "^5.3.0",
-		"vitest": "^2.0.0"
+		"vitest": "^4.0.15"
 	},
 	"peerDependencies": {
 		"react": ">=18.0.0"
